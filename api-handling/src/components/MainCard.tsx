@@ -24,7 +24,7 @@ textColor:string;
 
     return(
 
-        <div className="min-w-[218px] min-h-[218px] max-w-[218px] max-h-[218px]  flex flex-col w-full rounded-2xl bg-green-200 ring-2 ring-blue-900 py-6 px-6 gap-4 justify-center items-center"
+        <div className="min-w-[218px] min-h-[240px] max-w-[218px] max-h-[240px]  flex flex-col w-full rounded-2xl bg-green-100 ring-2 ring-blue-900 py-6 px-6 gap-4 justify-center items-center"
         >
 
             <div className="flex flex-col text-[18px] line-[14px] text-blue-400 text-center"> {title}</div>

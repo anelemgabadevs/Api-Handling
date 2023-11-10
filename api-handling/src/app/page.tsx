@@ -35,7 +35,8 @@ export default function MainPage() {
       // Setting loading to true for the specific card at the start of the handleclick function
       setCardStates((prevStates) => [
         ...prevStates.slice(0, index),
-        { ...prevStates[index], isLoading: true },
+        { ...prevStates[index], isLoading: true, responseStatus: '',
+          responseDescription: '', },
         ...prevStates.slice(index + 1),
       ]);
 
@@ -47,9 +48,16 @@ export default function MainPage() {
 
       const loadingText = cardStates[index].isLoading ? '.....' : 'FireApiCall';
 
-      if (!apiResponse.ok) {
-        const responseData = await apiResponse.json();
+      let responseData:any = null;
 
+      try {
+        responseData = await apiResponse.json();
+      } catch (error) {
+        console.log('no response data returned')
+      }
+
+      if (!apiResponse.ok) {
+        
         // Updating card states
         setCardStates((prevStates) => [
           ...prevStates.slice(0, index),
@@ -63,8 +71,9 @@ export default function MainPage() {
           ...prevStates.slice(index + 1),
         ]);
       } else {
-        const responseData = await apiResponse.json();
-
+        
+        console.log(responseData, 'responseData');
+        
         // Updating card states
         setCardStates((prevStates) => [
           ...prevStates.slice(0, index),
@@ -78,8 +87,10 @@ export default function MainPage() {
           ...prevStates.slice(index + 1),
         ]);
 
-        const data = await apiResponse.json();
-        setApiResponseData(data);
+        setApiResponseData(responseData);
+        if (apiResponseData!==null){
+          setErrorDisplay(false)
+        }
       }
     } catch (error) {
       setErrorDisplay(true)
@@ -99,7 +110,10 @@ export default function MainPage() {
   const handleIndividualApiCall = async (url: string, index: number) => {
     try {
       await HandleGlobalApiRequest(url, index);
-      console.log(apiResponseData);
+      
+      if (apiResponseData!==null){
+        setErrorDisplay(false)
+      }
     } catch (error) {
       console.log('An error occurred');
       setErrorDisplay(true)
@@ -145,7 +159,9 @@ export default function MainPage() {
     );
   };
   return (
-    <div className="flex flex-row w-full h-full flex-wrap justify-center bg-white items-center lg:px-48 lg:py-16">
+    <div className="flex flex-col w-full h-full bg-white justify-center items-center p-8 xl:p-16 gap-6">
+      <div className="flex flex-col text-black text-[40px] font-600 items-center text-center"> Getting various api responses </div>
+    <div className="flex flex-row w-full h-full flex-wrap  justify-center bg-white items-center lg:px-16 xl:px-48 lg:py-16">
       {showErrorDiv===true? <ErrorDiv/> : <></>}
       {cardData.map((cardItem: any, index: number) => (
         <div key={`card-items-${index}`} className="flex flex-col md:flex-row flex-wrap gap-y-4 gap-x-4 p-4">
@@ -160,6 +176,7 @@ export default function MainPage() {
           />
         </div>
       ))}
+    </div>
     </div>
   );
 }
